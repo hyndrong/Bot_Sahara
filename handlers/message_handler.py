@@ -1,4 +1,4 @@
-from telegram.ext import MessageHandler, Filters  
+from telegram.ext import MessageHandler, filters  
 from services.translator import LibreTranslator  
 from services.text_utils import is_arabic, format_translation  
 
@@ -30,5 +30,5 @@ def handle_text_message(update, context):
 
 def setup_message_handlers(dispatcher):  
     dispatcher.add_handler(  
-        MessageHandler(Filters.text & ~Filters.command, handle_text_message)  
+        MessageHandler(filters.text & ~filters.command, handle_text_message)  
     )  
