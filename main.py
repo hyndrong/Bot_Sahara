@@ -1,5 +1,5 @@
 import logging  
-from telegram.ext import Updater  
+from telegram.ext import Updater, Application 
 from config import TELEGRAM_TOKEN  
 from handlers.command_handler import setup_command_handlers  
 from handlers.message_handler import setup_message_handlers  
@@ -9,21 +9,19 @@ logging.basicConfig(
     level=logging.INFO  
 )  
 logger = logging.getLogger(__name__)  
+async def post_init(app):
+    logging.info("Bot berjalan dengan baik...")
 
-def main():  
-    try:  
-        updater = Updater(TELEGRAM_TOKEN, use_context=True)  
-        dispatcher = updater.dispatcher  
+def main():
+    app = Application.builder().token(TELEGRAM_TOKEN).post_init(post_init).build()
+    
+    from handlers.command_handler import setup_command_handlers
+    from handlers.message_handler import setup_message_handlers
+    
+    setup_command_handlers(app)
+    setup_message_handlers(app)
+    
+    app.run_polling()
 
-        setup_command_handlers(dispatcher)  
-        setup_message_handlers(dispatcher)  
-
-        logger.info("🤖 Bot sedang berjalan...")  
-        updater.start_polling()  
-        updater.idle()  
-
-    except Exception as e:  
-        logger.error(f"❌ Bot crash: {e}")  
-
-if __name__ == "__main__":  
-    main()  
+if __name__ == '__main__':
+    main()
